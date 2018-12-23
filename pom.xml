@@ -22,7 +22,7 @@
 
     <modules>
         <module>dijkstra-web</module>
-        <module>dijsktra-common</module>
+        <module>dijkstra-common</module>
     </modules>
 
 </project>
