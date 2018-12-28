@@ -4,16 +4,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import za.co.dmh.Node;
+import za.co.dmh.core.domain.Node;
 import za.co.dmh.core.service.DuplicateNodeException;
 import za.co.dmh.core.service.INodeService;
 import za.co.dmh.core.service.NodeNotFoundException;
-import za.co.dmh.response.BaseResponse;
-import za.co.dmh.response.Status;
-
+import za.co.dmh.core.domain.response.BaseResponse;
+import za.co.dmh.core.domain.response.Status;
 
 @RestController("/")
 public class NodeController {
@@ -24,7 +24,6 @@ public class NodeController {
     @RequestMapping(
             path = "/nodes",
             method = RequestMethod.GET,
-            consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<BaseResponse> getNodes() {
@@ -56,9 +55,8 @@ public class NodeController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<BaseResponse> addNode(String nodeName, Node node) {
+    public ResponseEntity<BaseResponse> addNode(@RequestBody Node node) {
         try {
-            // TODO set NodeName on node before attempting to add it
             BaseResponse response = service.addNode(node);
             return ResponseEntity.ok(response);
         } catch (DuplicateNodeException e) {

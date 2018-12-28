@@ -1,16 +1,29 @@
 package za.co.dmh.core.service.impl;
 
-import za.co.dmh.Node;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import za.co.dmh.core.domain.Node;
+import za.co.dmh.core.datalayer.NodeRepository;
 import za.co.dmh.core.service.DuplicateNodeException;
 import za.co.dmh.core.service.INodeService;
 import za.co.dmh.core.service.NodeNotFoundException;
-import za.co.dmh.response.NodeListResponse;
+import za.co.dmh.core.domain.response.NodeListResponse;
+import za.co.dmh.core.domain.response.Status;
 
+@Service
+@Transactional
 public class NodeService implements INodeService {
+
+    @Autowired
+    NodeRepository nodeRepository;
 
     @Override
     public NodeListResponse findAll() {
-        throw new IllegalStateException("Not implemented yet.");
+        NodeListResponse response = new NodeListResponse();
+        response.setStatus(Status.SUCCESS);
+        response.getNodeList().addAll(nodeRepository.findAll());
+        return response;
     }
 
     @Override
@@ -20,7 +33,11 @@ public class NodeService implements INodeService {
 
     @Override
     public NodeListResponse addNode(Node node) throws DuplicateNodeException {
-        throw new IllegalStateException("Not implemented yet.");
+        NodeListResponse response = new NodeListResponse();
+        response.setStatus(Status.SUCCESS);
+        nodeRepository.save(node);
+        response.getNodeList().add(node);
+        return response;
     }
 
     @Override

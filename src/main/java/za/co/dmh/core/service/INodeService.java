@@ -1,7 +1,7 @@
 package za.co.dmh.core.service;
 
-import za.co.dmh.Node;
-import za.co.dmh.response.NodeListResponse;
+import za.co.dmh.core.domain.Node;
+import za.co.dmh.core.domain.response.NodeListResponse;
 
 /**
  * Service for CRUD operations for Nodes.

@@ -1,4 +1,4 @@
-package za.co.dmh.response;
+package za.co.dmh.core.domain.response;
 
 public enum Status {
 
