@@ -1,6 +1,8 @@
-package za.co.dmh.core.service.node;
+package za.co.dmh.core.service;
 
 import za.co.dmh.core.domain.Node;
+import za.co.dmh.core.domain.Route;
+import za.co.dmh.core.domain.response.BaseResponse;
 import za.co.dmh.core.domain.response.NodeListResponse;
 
 /**
@@ -47,8 +49,37 @@ public interface INodeService {
     /**
      * Remove a {@link Node}.
      *
-     * @param nodeName the name of the {@link Node} that is to be deleted.
+     * @param uniqueId the unique ID of the {@link Node} that is to be deleted.
      * @return a response object including the deleted {@link Node}.
      */
-    public NodeListResponse deleteNode(String nodeName) throws NodeNotFoundException;
+    public NodeListResponse deleteNode(String uniqueId) throws NodeNotFoundException;
+
+    /**
+     * Create a new {@link Route} between two {@link Node}.
+     *
+     * @param distance
+     * @param source
+     * @param destination
+     * @return The response object with the source Node and its Route's.
+     * @throws NodeNotFoundException
+     * @throws DuplicateRouteException
+     */
+    public NodeListResponse createRoute(Double distance, String source, String destination) throws NodeNotFoundException, DuplicateRouteException;
+
+    /**
+     * Delete a {@link Route}.
+     *
+     * @param uniqueId
+     * @return The response object with the status of the request.
+     * @throws NodeNotFoundException
+     */
+    public BaseResponse deleteRoute(String uniqueId);
+
+    /**
+     * Update a {@link Route}.
+     *
+     * @param uniqueId
+     * @return The response object with the status of the request.
+     */
+    public BaseResponse updateRoute(String uniqueId, Double distance);
 }

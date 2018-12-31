@@ -4,12 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import za.co.dmh.core.domain.Node;
+import za.co.dmh.core.domain.Route;
 import za.co.dmh.core.service.DuplicateNodeException;
+import za.co.dmh.core.service.DuplicateRouteException;
 import za.co.dmh.core.service.INodeService;
 import za.co.dmh.core.service.NodeNotFoundException;
 import za.co.dmh.core.domain.response.BaseResponse;
@@ -32,19 +31,18 @@ public class NodeController {
     }
 
     @RequestMapping(
-            path = "/nodes/{nodeName}",
+            path = "/nodes/{uniqueId}",
             method = RequestMethod.GET,
-            consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<BaseResponse> getNode(String nodeName) {
+    public ResponseEntity<BaseResponse> getNode(@PathVariable(name = "uniqueId") String uniqueId) {
         try {
-            BaseResponse response = service.findNode(nodeName);
+            BaseResponse response = service.findNode(uniqueId);
             return ResponseEntity.ok(response);
         } catch (NodeNotFoundException e) {
             BaseResponse errorResponse = new BaseResponse();
             errorResponse.setStatus(Status.FAILURE);
-            errorResponse.setMessage("Unable to retrieve Node: Node does not exist.");
+            errorResponse.setMessage("Unable to retrieve Node.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
         }
     }
@@ -55,56 +53,98 @@ public class NodeController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<BaseResponse> addNode(@RequestBody Node node) {
+    public ResponseEntity<BaseResponse> addNode(@PathVariable(name = "nodeName") String nodeName, @RequestBody Node node) {
         try {
+            node.setName(nodeName);
             BaseResponse response = service.addNode(node);
             return ResponseEntity.ok(response);
         } catch (DuplicateNodeException e) {
             BaseResponse errorResponse = new BaseResponse();
             errorResponse.setStatus(Status.FAILURE);
-            errorResponse.setMessage("Unable to add Node: Node already exists.");
+            errorResponse.setMessage("Unable to add Node.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
         }
     }
 
     @RequestMapping(
-            path = "/nodes/{nodeName}",
+            path = "/nodes/{uniqueId}/{nodeName}",
             method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<BaseResponse> updateNode(String nodeName, Node node) {
+    public ResponseEntity<BaseResponse> updateNode(@PathVariable(name = "uniqueId") String uniqueId, @PathVariable(name = "nodeName") String nodeName) {
         try {
-            BaseResponse response = service.updateNode(nodeName, node);
+            BaseResponse response = service.updateNode(uniqueId, nodeName);
             return ResponseEntity.ok(response);
         } catch (NodeNotFoundException e) {
             BaseResponse errorResponse = new BaseResponse();
             errorResponse.setStatus(Status.FAILURE);
-            errorResponse.setMessage("Unable to update Node: Node does not exist.");
+            errorResponse.setMessage("Unable to update Node.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
         } catch (DuplicateNodeException e) {
             BaseResponse errorResponse = new BaseResponse();
             errorResponse.setStatus(Status.FAILURE);
-            errorResponse.setMessage("Unable to add Node: Node already exists.");
+            errorResponse.setMessage("Unable to add Node.");
             return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
         }
     }
 
     @RequestMapping(
-            path = "/nodes/{nodeName}",
+            path = "/nodes/{uniqueId}",
             method = RequestMethod.DELETE,
-            consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<BaseResponse> deleteNode(String nodeName) {
+    public ResponseEntity<BaseResponse> deleteNode(@PathVariable(name = "uniqueId") String uniqueId) {
         try {
-            BaseResponse response = service.deleteNode(nodeName);
+            BaseResponse response = service.deleteNode(uniqueId);
             return ResponseEntity.ok(response);
         } catch (NodeNotFoundException e) {
             BaseResponse errorResponse = new BaseResponse();
             errorResponse.setStatus(Status.FAILURE);
-            errorResponse.setMessage("Unable to update Node: Node does not exist.");
+            errorResponse.setMessage("Unable to update Node.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
         }
+    }
+
+    @RequestMapping(
+            path = "/nodes/route",
+            method = RequestMethod.POST,
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<BaseResponse> createRoute(@RequestBody Route route) {
+        try {
+            BaseResponse response = service.createRoute(route.getDistance(), route.getSource().getUniqueId(), route.getDestination().getUniqueId());
+            return ResponseEntity.ok(response);
+        } catch (NodeNotFoundException e) {
+            BaseResponse errorResponse = new BaseResponse();
+            errorResponse.setStatus(Status.FAILURE);
+            errorResponse.setMessage("Unable to create Route.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+        } catch (DuplicateRouteException e) {
+            BaseResponse errorResponse = new BaseResponse();
+            errorResponse.setStatus(Status.FAILURE);
+            errorResponse.setMessage("Unable to create Route.");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
+        }
+    }
+
+    @RequestMapping(
+            path = "/nodes/route/{uniqueId}",
+            method = RequestMethod.DELETE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<BaseResponse> deleteRoute(@PathVariable String uniqueId) {
+        return ResponseEntity.ok(service.deleteRoute(uniqueId));
+    }
+
+    @RequestMapping(
+            path = "/nodes/route/{uniqueId}",
+            method = RequestMethod.PUT,
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<BaseResponse> updateRoute(@PathVariable String uniqueId, @RequestBody Route route) {
+        return ResponseEntity.ok(service.updateRoute(uniqueId, route.getDistance()));
     }
 }

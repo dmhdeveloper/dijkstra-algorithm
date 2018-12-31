@@ -1,6 +1,6 @@
 package za.co.dmh.core.domain.response;
 
-import za.co.dmh.Node;
+import za.co.dmh.core.domain.Node;
 
 import java.util.ArrayList;
 import java.util.List;
