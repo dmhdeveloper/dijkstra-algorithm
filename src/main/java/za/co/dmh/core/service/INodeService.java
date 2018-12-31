@@ -1,4 +1,4 @@
-package za.co.dmh.core.service;
+package za.co.dmh.core.service.node;
 
 import za.co.dmh.core.domain.Node;
 import za.co.dmh.core.domain.response.NodeListResponse;
@@ -16,13 +16,13 @@ public interface INodeService {
     public NodeListResponse findAll();
 
     /**
-     * Retrieve a {@link Node} by name.
+     * Retrieve a {@link Node} by unique ID.
      *
-     * @param nodeName the name of the {@link Node} you want to retrieve.
+     * @param uniqueId the unique ID of the {@link Node} you want to retrieve.
      * @return a response object including the requested {@link Node}.
      * @throws NodeNotFoundException if the name does not match an existing {@link Node} name.
      */
-    public NodeListResponse findNode(String nodeName) throws NodeNotFoundException;
+    public NodeListResponse findNode(String uniqueId) throws NodeNotFoundException;
 
     /**
      * Add a new one if the {@link Node} does not exist.
@@ -36,13 +36,13 @@ public interface INodeService {
     /**
      * Update an existing {@link Node}.
      *
-     * @param nodeName The name of the {@link Node} that is to be updated.
-     * @param node The {@link Node} that contains the updated variables.
+     * @param uniqueId The unique ID of the {@link Node} that is to be updated.
+     * @param nodeName The new name of the {@link Node}
      * @return a response object with the {@link Node} that was updated.
      * @throws NodeNotFoundException if the {@link Node} does not exist.
      * @throws DuplicateNodeException if the {@link Node} does exist but has the same state as another {@link Node}.
      */
-    public NodeListResponse updateNode(String nodeName, Node node) throws NodeNotFoundException, DuplicateNodeException;
+    public NodeListResponse updateNode(String uniqueId, String nodeName) throws NodeNotFoundException, DuplicateNodeException;
 
     /**
      * Remove a {@link Node}.
