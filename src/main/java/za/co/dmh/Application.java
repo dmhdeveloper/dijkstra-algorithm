@@ -10,7 +10,7 @@ import org.springframework.data.neo4j.repository.config.EnableNeo4jRepositories;
 @SpringBootApplication
 @EnableAutoConfiguration
 @ComponentScan(basePackages = "za.co.dmh")
-@EntityScan(basePackages = "za.co.dmh")
+@EntityScan(basePackages = "za.co.dmh.core.domain")
 @EnableNeo4jRepositories(basePackages = "za.co.dmh.core.datalayer")
 public class Application {
 
